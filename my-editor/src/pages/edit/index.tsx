@@ -3,6 +3,8 @@
  * @Description:
  */
 import Header from "@/component/Header";
+import JSContent from "@/component/JSContent";
+import Console from "@/component/Console";
 import { FC } from "react";
 import styled from "styled-components";
 const EditContainer = styled.div`
@@ -24,7 +26,10 @@ const index: FC = () => {
     <>
       <EditContainer>
         <Header></Header>
-        <div className="content">fdsaf</div>
+        <div className="content">
+          <JSContent></JSContent>
+          <Console></Console>
+        </div>
       </EditContainer>
     </>
   );
