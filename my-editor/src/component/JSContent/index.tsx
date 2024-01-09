@@ -20,17 +20,63 @@ const JSContent: FC = () => {
   const editorEl = useRef<HTMLDivElement>(null);
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor>();
 
+  /**
+   * @description: 遍历AST，判断是否有import语句
+   * @param {string} code
+   * @return {*}
+   */
+  const checkHasImport = (code: string): Boolean => {
+    let result = false;
+    window.Babel.transform(code, {
+      plugins: [
+        function () {
+          return {
+            visitor: {
+              ImportDeclaration(path: { stop: () => void }) {
+                // console.log(path);
 
+                result = true;
+                path.stop();
+              },
+            },
+          };
+        },
+      ],
+    });
+    return result;
+  };
+
+  const parseJsImportPlugin = (importMap: string) => {
+
+  };
+
+  const resolveImport = (code: string, importMap: string) => {
+    if (!checkHasImport(code)) {
+      return {
+        useImport: false,
+        js: code,
+      };
+    }
+    return {
+      useImport: true,
+      js: window.Babel.transform(code, {
+        plugins: [parseJsImportPlugin(importMap)],
+      }).code,
+    };
+  };
   const compile = () => {
     return new Promise((resolve, reject) => {
       if (!editorRef.current) return reject("Editor not initialized");
       const code = editorRef.current!.getValue();
 
-      if (code === "") return;
-      const _code = window.Babel.transform(code, {
-        presets: ["es2015", "react"],
-      })?.code;
-      console.log(_code);
+      // 纯babel编译
+      // if (code === "") return;
+      // const _code = window.Babel.transform(code, {
+      //   presets: ["es2015", "react"],
+      // })?.code;
+
+      // 对js环境进行编译
+      const _code = resolveImport(code, "importMap");
       resolve(_code);
     });
   };
@@ -60,7 +106,7 @@ const JSContent: FC = () => {
     createEditor();
     editorRef.current!.onDidChangeModelContent(() => {
       compile().then((res) => {
-        console.log(res);
+        // console.log(res);
       });
     });
 
