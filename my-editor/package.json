@@ -13,7 +13,6 @@
     "@babel/standalone": "^7.23.7",
     "@reduxjs/toolkit": "^2.0.1",
     "@types/babel__standalone": "^7.1.7",
-    "babel-standalone": "^6.26.0",
     "monaco-editor": "^0.45.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
