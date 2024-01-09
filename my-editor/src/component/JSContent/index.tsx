@@ -1,7 +1,7 @@
 import { FC, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import * as monaco from "monaco-editor";
-import { transform as babelTransform } from 'babel-standalone';
+import babelTransform from "@babel/standalone";
 const EditroContent = styled.div`
   width: 100%;
   height: 100%;
@@ -19,18 +19,19 @@ const EditroContent = styled.div`
 const JSContent: FC = () => {
   const editorEl = useRef<HTMLDivElement>(null);
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor>();
-  const [code, setCode] = useState<string>("");
+
 
   const compile = () => {
     return new Promise((resolve, reject) => {
-        console.log();
-        
-        const _code = babelTransform.transform(code,{
-          presets: ['es2015', 'react']
-        
-        })?.code
-        console.log(_code)
-        resolve(_code)
+      if (!editorRef.current) return reject("Editor not initialized");
+      const code = editorRef.current!.getValue();
+
+      if (code === "") return;
+      const _code = window.Babel.transform(code, {
+        presets: ["es2015", "react"],
+      })?.code;
+      console.log(_code);
+      resolve(_code);
     });
   };
   const createEditor = () => {
@@ -58,12 +59,9 @@ const JSContent: FC = () => {
   useEffect(() => {
     createEditor();
     editorRef.current!.onDidChangeModelContent(() => {
-      const value = editorRef.current!.getValue();
-      setCode(value);
       compile().then((res) => {
-        console.log('fdf');
-        
-      })
+        console.log(res);
+      });
     });
 
     return () => {
@@ -76,7 +74,6 @@ const JSContent: FC = () => {
   return (
     <>
       <EditroContent>
-        <div>{code}</div>
         <div className="editor-content-header">JS</div>
         <div className="editor-content-body" ref={editorEl}></div>
       </EditroContent>
