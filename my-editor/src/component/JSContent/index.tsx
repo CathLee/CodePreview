@@ -1,7 +1,8 @@
 import { FC, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import * as monaco from "monaco-editor";
-import babelTransform from "@babel/standalone";
+import { NodePath } from "@babel/traverse";
+import { ImportDeclaration } from "@babel/types";
 const EditroContent = styled.div`
   width: 100%;
   height: 100%;
@@ -16,6 +17,9 @@ const EditroContent = styled.div`
   }
 `;
 
+interface Visited {
+  [key: string]: boolean;
+}
 const JSContent: FC = () => {
   const editorEl = useRef<HTMLDivElement>(null);
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor>();
@@ -32,7 +36,7 @@ const JSContent: FC = () => {
         function () {
           return {
             visitor: {
-              ImportDeclaration(path: { stop: () => void }) {
+              ImportDeclaration(path: NodePath<ImportDeclaration>) {
                 // console.log(path);
 
                 result = true;
@@ -46,8 +50,29 @@ const JSContent: FC = () => {
     return result;
   };
 
-  const parseJsImportPlugin = (importMap: string) => {
-
+  const handleCDNSource = (source: string, importMap: any) => {
+    
+  }
+  const parseJsImportPlugin = (importMap = {}) => {
+    let visited: Visited = {};
+    return function (babel: { types: any; }) {
+      let visited = {};
+      let t = babel.types;
+      return {
+        visitor: {
+          ImportDeclaration(path: NodePath<ImportDeclaration>) {
+            let source: string = path.node.source.value;
+            if (!(visited as Visited)[source]) {
+              source = handleCDNSource(source, importMap);
+            }
+            visited[source] = true;
+            path.replaceWith(
+              t.importDeclaration(path.node.specifiers, t.stringLiteral(source))
+            );
+          },
+        },
+      };
+    };
   };
 
   const resolveImport = (code: string, importMap: string) => {
