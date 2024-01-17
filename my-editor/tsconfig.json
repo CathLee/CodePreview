@@ -11,8 +11,10 @@
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": true,
     "jsx": "react-jsx",
+    "allowJs": true,    // 允许编译器读取 JS 文件
+    "checkJs": true,    // 在 JS 文件中检查类型错误
+    "noEmit": true,      // 不输出编译结果，只进行类型检查
 
     /* Linting */
     "strict": true,
