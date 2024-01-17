@@ -27,7 +27,7 @@ const index: FC = () => {
       <EditContainer>
         <Header></Header>
         <div className="content">
-          <JSContent></JSContent>
+          {/* <JSContent></JSContent> */}
           <Console></Console>
         </div>
       </EditContainer>
