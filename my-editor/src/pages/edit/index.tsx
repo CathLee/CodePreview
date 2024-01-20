@@ -5,6 +5,7 @@
 import Header from "@/component/Header";
 import JSContent from "@/component/JSContent";
 import Console from "@/component/Console";
+import { useFetch } from "@/hooks/useFetch";
 import { FC } from "react";
 import styled from "styled-components";
 const EditContainer = styled.div`
@@ -21,16 +22,19 @@ const EditContainer = styled.div`
     overflow: hidden;
   }
 `;
-const index: FC = () => {
+
+const index = (url: string)=> {
+  const { data, error, loading } = useFetch(url)
   return (
     <>
-      <EditContainer>
-        <Header></Header>
+      {/* <EditContainer> */}
+        {/* <Header></Header> */}
         <div className="content">
           {/* <JSContent></JSContent> */}
-          <Console></Console>
+          {/* <Console></Console> */}
         </div>
-      </EditContainer>
+      {/* </EditContainer> */}
+      {data && <div>{data}</div>}
     </>
   );
 };
