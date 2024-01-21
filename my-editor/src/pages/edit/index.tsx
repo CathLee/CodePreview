@@ -7,6 +7,7 @@ import JSContent from "@/component/JSContent";
 import Console from "@/component/Console";
 import { FC } from "react";
 import styled from "styled-components";
+import Query from "@/component/Query/index ";
 const EditContainer = styled.div`
   position: fixed;
   left: 0;
@@ -28,7 +29,8 @@ const index: FC = () => {
         <Header></Header>
         <div className="content">
           {/* <JSContent></JSContent> */}
-          <Console></Console>
+          {/* <Console></Console> */}
+          <Query></Query>
         </div>
       </EditContainer>
     </>
