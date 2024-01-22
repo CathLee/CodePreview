@@ -8,7 +8,7 @@ import * as monaco from "monaco-editor";
 import { NodePath } from "@babel/traverse";
 import { useCodeEditor } from "@/hooks/useCodeEditor";
 const EditroContent = styled.div`
-  width: 100%;
+  width: 33%;
   height: 100%;
   display: flex;
   flex-direction: column;

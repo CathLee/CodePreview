@@ -5,8 +5,8 @@
 import { FC, useEffect, useRef } from "react";
 import styled from "styled-components";
 import * as monaco from "monaco-editor";
-const EditroContent = styled.div`
-  width: 100%;
+const EditorContent = styled.div`
+  width: 33%;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -19,7 +19,7 @@ const EditroContent = styled.div`
   }
 `;
 
-const Console: FC = () => {
+const CSSContent: FC = () => {
   const editorEl = useRef<HTMLDivElement>(null);
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor>();
   const createEditor = () => {
@@ -60,7 +60,7 @@ const Console: FC = () => {
   const resolveCSS = (code: string) => {
     console.log(code);
     console.log(window);
-    
+
     const ast = transformCssImport(code);
     console.log(ast);
   };
@@ -75,10 +75,11 @@ const Console: FC = () => {
   }, [createEditor, disposeEditor]);
   return (
     <>
-      <EditroContent>
+      <EditorContent>
+        <div className="editor-content-header">CSS</div>
         <div className="editor-content-body" ref={editorEl}></div>
-      </EditroContent>
+      </EditorContent>
     </>
   );
 };
-export default Console;
+export default CSSContent;
