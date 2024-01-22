@@ -23,8 +23,7 @@ const EditroContent = styled.div`
 
 const JSContent: FC = () => {
   const editorEl = useRef<HTMLDivElement>(null);
-  const { createEditor,disposeEditor } = useCodeEditor(editorEl);
-  console.log(createEditor);
+  const { createEditor,disposeEditor } = useCodeEditor(editorEl,'javascript');
   
   useEffect(() => {
     createEditor();

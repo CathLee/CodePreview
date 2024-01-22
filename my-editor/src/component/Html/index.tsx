@@ -5,6 +5,7 @@
 import { FC, useEffect, useRef } from "react";
 import * as monaco from "monaco-editor";
 import styled from "styled-components";
+import { useCodeEditor } from "@/hooks/useCodeEditor";
 
 const EditorContent = styled.div`
   width: 33%;
@@ -22,33 +23,8 @@ const EditorContent = styled.div`
 
 const HTMLContent: FC = () => {
   const editorEl = useRef<HTMLDivElement>(null);
-  const editorRef = useRef<monaco.editor.IStandaloneCodeEditor>();
-  const createEditor = () => {
-    if (!editorEl.current) return;
+  const { createEditor, disposeEditor } = useCodeEditor(editorEl, "html");
 
-    editorRef.current = monaco.editor.create(editorEl.current, {
-      language: "html", // Set the language to JavaScript
-      minimap: { enabled: false },
-      wordWrap: "on",
-      theme: "vs-dark",
-      fontSize: 16,
-      fontFamily: "MonoLisa, monospace",
-      contextmenu: false,
-      fixedOverflowWidgets: true,
-      readOnly: false,
-    });
-
-    editorRef.current.onDidChangeModelContent(() => {
-      const code = `<div>hhh</div>`;
-
-    //   const res = resolveCSS(code);
-    //   console.log(res);
-    });
-  };
-
-  const disposeEditor = () => {
-    editorRef.current?.dispose();
-  };
   useEffect(() => {
     createEditor();
     return () => disposeEditor();
@@ -56,7 +32,7 @@ const HTMLContent: FC = () => {
   return (
     <>
       <EditorContent>
-      <div className="editor-content-header">HTML</div>
+        <div className="editor-content-header">HTML</div>
         <div className="editor-content-body" ref={editorEl}></div>
       </EditorContent>
     </>
