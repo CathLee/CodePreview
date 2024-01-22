@@ -8,7 +8,7 @@ import CSSContent from "@/component/CSSContent";
 import HTMLContent from "@/component/Html";
 import { FC, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import { assembleHtml } from "@/utils/html";
+import { assembleHtml, compile } from "@/utils/html";
 const EditContainer = styled.div`
   position: fixed;
   left: 0;
@@ -28,7 +28,13 @@ const EditContainer = styled.div`
 
 const index: FC = () => {
   const [srcDoc, setSrcDoc] = useState("");
+  const [compileData, setCompileData] = useState<unknown>([]);
   const iframeRef = useRef<HTMLIFrameElement>(null);
+
+
+  const handleCompile = () => {
+    compiledData = await compile()
+  }
 
   useEffect(() => {
     if (iframeRef.current) {
