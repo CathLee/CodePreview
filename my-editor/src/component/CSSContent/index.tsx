@@ -2,12 +2,11 @@
  * @Date: 2024-01-09 21:33:06
  * @Description:
  */
-import { FC, useEffect, useRef, useState } from "react";
+import { FC, useEffect, useRef } from "react";
 import styled from "styled-components";
 import * as monaco from "monaco-editor";
-import { NodePath } from "@babel/traverse";
 import { useCodeEditor } from "@/hooks/useCodeEditor";
-const EditroContent = styled.div`
+const EditorContent = styled.div`
   width: 33%;
   height: 100%;
   display: flex;
@@ -21,21 +20,21 @@ const EditroContent = styled.div`
   }
 `;
 
-const JSContent: FC = () => {
+const CSSContent: FC = () => {
   const editorEl = useRef<HTMLDivElement>(null);
-  const { createEditor,disposeEditor } = useCodeEditor(editorEl,'javascript');
-  
+  const { createEditor, disposeEditor } = useCodeEditor(editorEl, "css");
+
   useEffect(() => {
     createEditor();
     return () => disposeEditor();
-  }, [createEditor,disposeEditor]);
+  }, [createEditor, disposeEditor]);
   return (
     <>
-      <EditroContent>
-        <div className="editor-content-header">JS</div>
+      <EditorContent>
+        <div className="editor-content-header">CSS</div>
         <div className="editor-content-body" ref={editorEl}></div>
-      </EditroContent>
+      </EditorContent>
     </>
   );
 };
-export default JSContent;
+export default CSSContent;
