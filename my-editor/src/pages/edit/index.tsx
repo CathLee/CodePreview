@@ -6,7 +6,7 @@ import Header from "@/component/Header";
 import JSContent from "@/component/JSContent";
 import CSSContent from "@/component/CSSContent";
 import HTMLContent from "@/component/Html";
-import { FC, useEffect, useRef, useState } from "react";
+import { FC, useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { assembleHtml, compile } from "@/utils/html";
 const EditContainer = styled.div`
@@ -27,35 +27,62 @@ const EditContainer = styled.div`
 `;
 
 const index: FC = () => {
-  const [srcDoc, setSrcDoc] = useState("");
-  const [compileData, setCompileData] = useState<unknown>([]);
+  const [srcDoc, setSrcDoc] = useState<string>("");
+  const [compileData, setCompileData] = useState<string>("");
+
+  const [jsContent, setJsContent] = useState();
+  const [htmlContent, setHtmlContent] = useState();
+  const [cssContent, setCssContent] = useState();
+
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
+  const handleJSContentChange = (data: string) => {
+    setJsContent(data);
+  };
 
-  const handleCompile = () => {
-    compiledData = await compile()
-  }
+  const handleHTMLContentChange = (data: string) => {
+    setHtmlContent(data);
+  };
+
+  const handleCSSContentChange = (data: string) => {
+    setCssContent(data);
+  };
+
+  const handleCompile = useCallback(async () => {
+    const data = await compile(jsContent, htmlContent, cssContent);
+    console.log(data)
+    setSrcDoc(data as string);
+  }, [jsContent, htmlContent, cssContent]);
 
   useEffect(() => {
-    if (iframeRef.current) {
-      const document =
-        iframeRef.current.contentDocument ||
-        iframeRef.current.contentWindow?.document;
-      if (document) {
-        document.open();
-        document.write(assembleHtml("<title>预览</title>", "<div>hhh</div>"));
-        document.close();
-      }
-    }
-  }, []);
+    // if (iframeRef.current) {
+    //   const document =
+    //     iframeRef.current.contentDocument ||
+    //     iframeRef.current.contentWindow?.document;
+    //   if (document) {
+    //     document.open();
+    //     document.write(assembleHtml("<title>预览</title>", "<div>hhh</div>"));
+    //     document.close();
+    //   }
+    // }
+    handleCompile();
+    // const timeoutId = setTimeout(() => {
+      
+    //   if(jsContent!==''&&htmlContent!==''&&cssContent!==''){
+       
+    //   }
+    //   console.log(srcDoc)
+    // }, 1000);
+    // return () => clearTimeout(timeoutId);
+  }, [jsContent, htmlContent, cssContent, handleCompile]);
   return (
     <>
       <EditContainer>
         <Header></Header>
         <div className="content">
-          <JSContent></JSContent>
-          <CSSContent></CSSContent>
-          <HTMLContent></HTMLContent>
+          <JSContent onChange={handleJSContentChange}></JSContent>
+          <CSSContent onChange={handleCSSContentChange}></CSSContent>
+          <HTMLContent onChange={handleHTMLContentChange}></HTMLContent>
         </div>
         <div>
           <iframe ref={iframeRef} src={srcDoc}></iframe>

@@ -22,8 +22,23 @@ export const compile = (
   htmlContent: string,
   cssContent: string
 ) => {
-    const htmlTransform = transform.html(htmlContent);
-    // todos:importMap 暂定为空
-    const jsTransform = transform.js(jsContent,{})
-    const cssTransform = transform.css(cssContent);
+    console.log(jsContent, htmlContent, cssContent);
+    
+  const htmlTransform = transform.html(htmlContent);
+  // todos:importMap 暂定为空
+  const jsTransform = transform.js(jsContent, {});
+  const cssTransform = transform.css(cssContent);
+  return new Promise((resolve, reject) => {
+    Promise.all([htmlTransform, jsTransform, cssTransform])
+      .then(([htmlStr, jsData, cssStr]) => {
+        resolve({
+          html: htmlStr,
+          js: jsData,
+          css: cssStr,
+        });
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
 };
