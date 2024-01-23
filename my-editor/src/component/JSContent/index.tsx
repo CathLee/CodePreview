@@ -21,10 +21,14 @@ const EditroContent = styled.div`
   }
 `;
 
-const JSContent: FC = () => {
+const JSContent: FC<{ onChange: (value: string) => void }> = ({ onChange }) => {
   const editorEl = useRef<HTMLDivElement>(null);
   const { createEditor,disposeEditor } = useCodeEditor(editorEl,'javascript');
   
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onChange(e.target.value); // 调用父组件传递的回调函数
+  };
+
   useEffect(() => {
     createEditor();
     return () => disposeEditor();
@@ -33,7 +37,7 @@ const JSContent: FC = () => {
     <>
       <EditroContent>
         <div className="editor-content-header">JS</div>
-        <div className="editor-content-body" ref={editorEl}></div>
+        <div className="editor-content-body" onInput={handleInputChange} ref={editorEl}></div>
       </EditroContent>
     </>
   );

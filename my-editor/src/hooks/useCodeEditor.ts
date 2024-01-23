@@ -31,9 +31,9 @@ export const useCodeEditor = (
     });
 
     editorRef.current.onDidChangeModelContent(() => {
-      compile(part).then((res) => {
-        console.log(res);
-      });
+    //   compile(part).then((res) => {
+    //     console.log(res);
+    //   });
     });
   }, [editorEl]);
 
@@ -55,7 +55,8 @@ export const useCodeEditor = (
           const _code = window.Babel.transform(code, {
             presets: ["env", "react"],
           })?.code;
-
+          console.log('compile js:',_code);
+          
           // 对js环境进行编译
           // 无论是js还是ts或者是其他框架语言都需要先编译成js
           // const _code = resolveImport(code, "importMap");
@@ -67,13 +68,15 @@ export const useCodeEditor = (
         return new Promise((resolve, reject) => {
           if (!editorRef.current) return reject("Editor not initialized");
           const code = editorRef.current!.getValue();
-        //   resolveCSS(code);
-        resolve("@import 'style/base.css'")
+          console.log('compile css:',code);
+          resolveCSS(code);
+        // resolve("@import 'style/base.css'")
         });
         case "html":
             return new Promise((resolve, reject) => {
                 if (!editorRef.current) return reject("Editor not initialized");
                 const code = editorRef.current!.getValue();
+                console.log('compile html:',code);
                 resolve(code)
             });
     }
