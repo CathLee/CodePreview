@@ -30,23 +30,23 @@ const index: FC = () => {
   const [srcDoc, setSrcDoc] = useState<string>("");
   const [compileData, setCompileData] = useState<string>("");
 
-  const [jsContent, setJsContent] = useState();
-  const [htmlContent, setHtmlContent] = useState();
-  const [cssContent, setCssContent] = useState();
+  const [jsContent, setJsContent] = useState<string>();
+  const [htmlContent, setHtmlContent] = useState<string>();
+  const [cssContent, setCssContent] = useState<string>();
 
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
-  const handleJSContentChange = (data: string) => {
+  const handleJSContentChange = useCallback((data: string) => {
     setJsContent(data);
-  };
-
-  const handleHTMLContentChange = (data: string) => {
+  }, []);
+  
+  const handleHTMLContentChange = useCallback((data: string) => {
     setHtmlContent(data);
-  };
-
-  const handleCSSContentChange = (data: string) => {
+  }, []);
+  
+  const handleCSSContentChange = useCallback((data: string) => {
     setCssContent(data);
-  };
+  }, []);
 
   const handleCompile = useCallback(async () => {
     const data = await compile(jsContent, htmlContent, cssContent);
