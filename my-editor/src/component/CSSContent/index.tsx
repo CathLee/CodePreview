@@ -2,7 +2,7 @@
  * @Date: 2024-01-09 21:33:06
  * @Description:
  */
-import { FC, useEffect, useRef } from "react";
+import { FC, memo, useEffect, useRef } from "react";
 import styled from "styled-components";
 import * as monaco from "monaco-editor";
 import { useCodeEditor } from "@/hooks/useCodeEditor";
@@ -20,25 +20,30 @@ const EditorContent = styled.div`
   }
 `;
 
-const CSSContent: FC<{onChange:(data:string)=>void}> = ({onChange}) => {
-  const editorEl = useRef<HTMLDivElement>(null);
-  const { createEditor, disposeEditor } = useCodeEditor(editorEl, "css");
+const CSSContent: FC<{ onChange: (data: string) => void }> = memo(
+  ({ onChange }) => {
+    const editorEl = useRef<HTMLDivElement>(null);
+    const { createEditor, disposeEditor } = useCodeEditor(editorEl, "css");
 
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onChange(e.target.value); // 调用父组件传递的回调函数
-  };
-  useEffect(() => {
-    createEditor();
-    return () => disposeEditor();
-  }, [createEditor, disposeEditor]);
-  return (
-    <>
-      <EditorContent>
-        <div className="editor-content-header">CSS</div>
-        <div className="editor-content-body" onInput={handleInputChange} ref={editorEl}></div>
-      </EditorContent>
-    </>
-  );
-};
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      onChange(e.target.value); // 调用父组件传递的回调函数
+    };
+    useEffect(() => {
+      createEditor();
+      return () => disposeEditor();
+    }, [createEditor, disposeEditor]);
+    return (
+      <>
+        <EditorContent>
+          <div className="editor-content-header">CSS</div>
+          <div
+            className="editor-content-body"
+            onInput={handleInputChange}
+            ref={editorEl}
+          ></div>
+        </EditorContent>
+      </>
+    );
+  }
+);
 export default CSSContent;
