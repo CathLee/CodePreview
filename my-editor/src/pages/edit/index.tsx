@@ -8,7 +8,8 @@ import CSSContent from "@/component/CSSContent";
 import HTMLContent from "@/component/Html";
 import { FC, useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import { assembleHtml, compile } from "@/utils/html";
+import { compile } from "@/utils/html";
+import { useCreateHtml } from "@/hooks/useCreateHtml";
 const EditContainer = styled.div`
   position: fixed;
   left: 0;
@@ -36,6 +37,9 @@ const index: FC = () => {
 
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
+
+  const { createHtml } = useCreateHtml()
+  // usecallback依赖为空，确保在整个生命周期中只会创建一个函数实例
   const handleJSContentChange = useCallback((data: string) => {
     setJsContent(data);
   }, []);
@@ -49,22 +53,24 @@ const index: FC = () => {
   }, []);
 
   const handleCompile = useCallback(async () => {
-    const data = await compile(jsContent, htmlContent, cssContent);
+    const data = await compile(jsContent || '', htmlContent || '', cssContent || '');
     console.log(data)
-    setSrcDoc(data as string);
+    const src = createHtml(data.html, data.css, data.js)
+    if (iframeRef.current) {
+      const document =
+        iframeRef.current.contentDocument ||
+        iframeRef.current.contentWindow?.document;
+      if (document) {
+        document.open();
+        document.write(src);
+        document.close();
+      }
+    }
+    // setSrcDoc(src as string);
   }, [jsContent, htmlContent, cssContent]);
 
   useEffect(() => {
-    // if (iframeRef.current) {
-    //   const document =
-    //     iframeRef.current.contentDocument ||
-    //     iframeRef.current.contentWindow?.document;
-    //   if (document) {
-    //     document.open();
-    //     document.write(assembleHtml("<title>预览</title>", "<div>hhh</div>"));
-    //     document.close();
-    //   }
-    // }
+    
     handleCompile();
     // const timeoutId = setTimeout(() => {
       

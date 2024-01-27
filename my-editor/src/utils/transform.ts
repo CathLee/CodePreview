@@ -1,15 +1,19 @@
+/*
+ * @Date: 2024-01-22 21:53:10
+ * @Description: 
+ */
 import { resolveImport } from "./babelHelper";
 
 const html = (code: string) => {
   return new Promise((resolve, reject) => {
-    console.log(code);
+    // console.log(code);
     resolve(code);
   });
 };
 
 const css = (code: string) => {
   return new Promise((resolve, reject) => {
-    console.log(code);
+    // console.log(code);
     
     resolve(code);
   });
