@@ -2,7 +2,7 @@
  * @Date: 2024-01-09 21:33:06
  * @Description:
  */
-import { FC, useEffect, useRef, useState } from "react";
+import { FC, memo, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import * as monaco from "monaco-editor";
 import { NodePath } from "@babel/traverse";
@@ -21,7 +21,7 @@ const EditroContent = styled.div`
   }
 `;
 
-const JSContent: FC<{ onChange: (value: string) => void }> = ({ onChange }) => {
+const JSContent: FC<{ onChange: (value: string) => void }> =memo (({ onChange }) => {
   const editorEl = useRef<HTMLDivElement>(null);
   const { createEditor,disposeEditor } = useCodeEditor(editorEl,'javascript');
   
@@ -41,5 +41,5 @@ const JSContent: FC<{ onChange: (value: string) => void }> = ({ onChange }) => {
       </EditroContent>
     </>
   );
-};
+});
 export default JSContent;
