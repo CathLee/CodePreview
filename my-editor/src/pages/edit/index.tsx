@@ -55,7 +55,7 @@ const index: FC = () => {
   const handleCompile = useCallback(async () => {
     const data = await compile(jsContent || '', htmlContent || '', cssContent || '');
     console.log(data)
-    const src = createHtml(data.html, data.css, data.js)
+    const src = createHtml(data.html, data.css, data.js.js)
     if (iframeRef.current) {
       const document =
         iframeRef.current.contentDocument ||
