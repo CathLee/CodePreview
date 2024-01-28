@@ -1,3 +1,4 @@
+import { SourceType } from "@/types/source";
 import transform from "./transform";
 
 /*
@@ -20,7 +21,7 @@ export const assembleHtml = (head: string, body: string) => {
 export const compile = (
   jsContent: string,
   htmlContent: string,
-  cssContent: string
+  cssContent: string,
 ) => {
     console.log(jsContent, htmlContent, cssContent);
     

@@ -10,6 +10,7 @@ import { FC, useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { compile } from "@/utils/html";
 import { useCreateHtml } from "@/hooks/useCreateHtml";
+import { SourceType } from "@/types/source";
 const EditContainer = styled.div`
   position: fixed;
   left: 0;
@@ -27,16 +28,17 @@ const EditContainer = styled.div`
   }
 `;
 
+
+
 const index: FC = () => {
   const [srcDoc, setSrcDoc] = useState<string>("");
-  const [compileData, setCompileData] = useState<string>("");
-
+  const [compileData, setCompileData] = useState<string>("");\
   const [jsContent, setJsContent] = useState<string>();
   const [htmlContent, setHtmlContent] = useState<string>();
   const [cssContent, setCssContent] = useState<string>();
-
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
+  
 
   const { createHtml } = useCreateHtml()
   // usecallback依赖为空，确保在整个生命周期中只会创建一个函数实例
@@ -53,9 +55,20 @@ const index: FC = () => {
   }, []);
 
   const handleCompile = useCallback(async () => {
+    // mock jsSource
+    const jsSource:SourceType[] = [
+        {
+            "name": "React",
+            "url": "https://unpkg.com/react@18.2.0/umd/react.development.js"
+        },
+        {
+            "name": "react-dom",
+            "url": "https://unpkg.com/react-dom@18.2.0/umd/react-dom.development.js"
+        }
+    ]
     const data = await compile(jsContent || '', htmlContent || '', cssContent || '');
     console.log(data)
-    const src = createHtml(data.html, data.css, data.js.js)
+    const src = createHtml((data as any).html, (data as any).css, (data as any).js.js, jsSource);
     if (iframeRef.current) {
       const document =
         iframeRef.current.contentDocument ||
