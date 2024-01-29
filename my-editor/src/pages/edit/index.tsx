@@ -32,7 +32,7 @@ const EditContainer = styled.div`
 
 const index: FC = () => {
   const [srcDoc, setSrcDoc] = useState<string>("");
-  const [compileData, setCompileData] = useState<string>("");\
+  const [compileData, setCompileData] = useState<string>("");
   const [jsContent, setJsContent] = useState<string>();
   const [htmlContent, setHtmlContent] = useState<string>();
   const [cssContent, setCssContent] = useState<string>();
@@ -67,8 +67,9 @@ const index: FC = () => {
         }
     ]
     const data = await compile(jsContent || '', htmlContent || '', cssContent || '');
-    console.log(data)
+    console.log(data.js.js,)
     const src = createHtml((data as any).html, (data as any).css, (data as any).js.js, jsSource);
+    console.log("src:",src)
     if (iframeRef.current) {
       const document =
         iframeRef.current.contentDocument ||

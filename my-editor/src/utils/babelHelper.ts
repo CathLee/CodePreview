@@ -53,7 +53,7 @@ const isBareImport = (source: string) => {
  */
 const parseJsImportPlugin = (importMap = {}) => {
   let visited: Visited;
-  return function (babel: { types: typeof BabelType}) {
+  return function (babel: { types: typeof BabelType }) {
     let t = babel.types;
     return {
       visitor: {
@@ -77,13 +77,32 @@ const handleEsModuleCdnUrl = (moudle: string, useModule: Boolean = true) => {
   return `${esModuleCdnUrl}${module}${useModule ? "?module" : ""}`;
 };
 
+// 记录加载状态
+const preprocessorLoaded = {
+  html: true,
+  javascript: true,
+  css: true,
+};
+
+// /**
+//  * @description: 加载babel资源
+//  * @param {string} preprocessorList
+//  * @return {*}
+//  */
+// const load = (preprocessorList: string[]) => {
+//   let notLoaded = preprocessorList.filter(item => {
+//     return !preprocessorLoaded[item]
+//   })
+// }
 /**
  * @description: 解析import语句
  * @param {string} code
  * @param {string} importMap 依赖包的cdn地址
  * @return {*}
  */
-export const resolveImport = (code: string, importMap: string) => {
+export const resolveImport = async (code: string, importMap: string) => {
+  console.log(code);
+  // 加载babel解析器
   if (!checkHasImport(code)) {
     return {
       useImport: false,
@@ -92,8 +111,9 @@ export const resolveImport = (code: string, importMap: string) => {
   }
   return {
     useImport: true,
-    js: window.Babel.transform(code, {
-      plugins: [parseJsImportPlugin(importMap)],
-    }).code,
+    // js: window.Babel.transform(code, {
+    //   plugins: [parseJsImportPlugin(importMap)],
+    // }).code,
+    js:code,
   };
 };
