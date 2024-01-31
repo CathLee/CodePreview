@@ -4,8 +4,9 @@
  */
 import { NodePath } from "@babel/core";
 import { ImportDeclaration } from "@babel/types";
+import loadjs from "loadjs";
 import * as BabelType from "@babel/types";
-
+export const base = "http://localhost:5173/";
 interface Visited {
   [key: string]: boolean;
 }
@@ -77,23 +78,51 @@ const handleEsModuleCdnUrl = (moudle: string, useModule: Boolean = true) => {
   return `${esModuleCdnUrl}${module}${useModule ? "?module" : ""}`;
 };
 
+interface PreprocessorLoaded {
+  [key: string]: boolean;
+}
 // 记录加载状态
-const preprocessorLoaded = {
+const preprocessorLoaded: PreprocessorLoaded = {
   html: true,
   javascript: true,
   css: true,
 };
 
-// /**
-//  * @description: 加载babel资源
-//  * @param {string} preprocessorList
-//  * @return {*}
-//  */
-// const load = (preprocessorList: string[]) => {
-//   let notLoaded = preprocessorList.filter(item => {
-//     return !preprocessorLoaded[item]
-//   })
-// }
+/**
+ * @description: 加载babel资源
+ * @param {string[]} preprocessorList
+ * @return {*}
+ */
+export const load = (preprocessorList: string[]) => {
+  let notLoaded: string[] = preprocessorList.filter(
+    (item) => !preprocessorLoaded[item]
+  );
+  if (notLoaded.length <= 0) {
+    return;
+  }
+  return new Promise<void>((resolve, reject) => {
+    let jsList: string[] = [];
+    notLoaded.forEach((item) => {
+      let _resources: string[] = [item].map((r) => {
+        return /^https?/.test(item) ? item : `${base}parses/${r}.js`;
+      });
+      jsList.push(..._resources);
+    });
+
+    loadjs(jsList, { returnPromise: true })
+      .then(() => {
+        notLoaded.forEach((item) => {
+          preprocessorLoaded[item] = true;
+        });
+        console.log("成功！！！！")
+        resolve();
+      })
+      .catch((err: Error) => {
+        console.log("dfsdfsdadfsadsfasd")
+        reject(err);
+      });
+  });
+};
 /**
  * @description: 解析import语句
  * @param {string} code
@@ -114,6 +143,6 @@ export const resolveImport = async (code: string, importMap: string) => {
     // js: window.Babel.transform(code, {
     //   plugins: [parseJsImportPlugin(importMap)],
     // }).code,
-    js:code,
+    js: code,
   };
 };
