@@ -1,3 +1,4 @@
+import { SourceType } from "@/types/source";
 import { assembleHtml } from "@/utils/html";
 
 /*
@@ -5,13 +6,23 @@ import { assembleHtml } from "@/utils/html";
  * @Description:
  */
 export const useCreateHtml = () => {
-  const createHtml = (htmlStr: string, cssStr: string, jsStr: string) => {
+  const createHtml = (
+    htmlStr: string,
+    cssStr: string,
+    jsStr: string,
+    jsSource: SourceType[]
+  ) => {
+    const _jsResources = jsSource.map((item) => {
+      return `<script src="${item.url}"></script>`;
+    });
     const head = `
       <title>预览<\/title>
       <style type="text/css">
           ${cssStr}
       <\/style>    `;
-    const jsContent = `<script>
+    const jsContent = `
+    
+    <script>
         try {
           ${jsStr}
         } catch (err) {
@@ -21,6 +32,7 @@ export const useCreateHtml = () => {
       <\/script>`;
     const body = `
       ${htmlStr}
+      ${_jsResources}
       ${jsContent}
     `;
     return assembleHtml(head, body);

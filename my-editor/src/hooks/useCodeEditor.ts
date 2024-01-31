@@ -31,9 +31,9 @@ export const useCodeEditor = (
     });
 
     editorRef.current.onDidChangeModelContent(() => {
-    //   compile(part).then((res) => {
-    //     console.log(res);
-    //   });
+      //   compile(part).then((res) => {
+      //     console.log(res);
+      //   });
     });
   }, [editorEl]);
 
@@ -55,30 +55,27 @@ export const useCodeEditor = (
           const _code = window.Babel.transform(code, {
             presets: ["env", "react"],
           })?.code;
-          console.log('compile js:',_code);
-          
+
           // 对js环境进行编译
           // 无论是js还是ts或者是其他框架语言都需要先编译成js
           // const _code = resolveImport(code, "importMap");
 
           resolve(_code);
         });
-        
+
       case "css":
         return new Promise((resolve, reject) => {
           if (!editorRef.current) return reject("Editor not initialized");
           const code = editorRef.current!.getValue();
-          console.log('compile css:',code);
           resolveCSS(code);
-        // resolve("@import 'style/base.css'")
+          // resolve("@import 'style/base.css'")
         });
-        case "html":
-            return new Promise((resolve, reject) => {
-                if (!editorRef.current) return reject("Editor not initialized");
-                const code = editorRef.current!.getValue();
-                console.log('compile html:',code);
-                resolve(code)
-            });
+      case "html":
+        return new Promise((resolve, reject) => {
+          if (!editorRef.current) return reject("Editor not initialized");
+          const code = editorRef.current!.getValue();
+          resolve(code);
+        });
     }
   }, []);
 
@@ -87,19 +84,15 @@ export const useCodeEditor = (
       /(@import\s+)('|")([^'"]+)('|")/g,
       (str: string, ...matches: string[]) => {
         let source = matches[2];
-        console.log(str);
         return `${matches[0]}${matches[1]}${source}${matches[1]}`;
       }
     );
   };
 
   const resolveCSS = (code: string) => {
-    console.log(code);
 
-    const ast = transformCssImport(code);
-    console.log(ast);
+    const css = transformCssImport(code);
   };
-
 
   return {
     createEditor,
