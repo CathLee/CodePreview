@@ -27,6 +27,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["src"],
+  "include": ["src", "public/parses"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
