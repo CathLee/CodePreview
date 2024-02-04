@@ -2,35 +2,38 @@
  * @Date: 2024-01-22 21:53:10
  * @Description:
  */
-import { resolveImport, load } from "./babelHelper";
+import { resolveImport, load, resolveJSX, ImportMap } from "./babelHelper";
 
-const html = (code: string) => {
+const html = (code: string):Promise<string>  => {
   return new Promise((resolve, reject) => {
-    // console.log(code);
     resolve(code);
   });
 };
 
-const css = (code: string) => {
+const css = (code: string):Promise<string> => {
   return new Promise((resolve, reject) => {
-    // console.log(code);
-
     resolve(code);
   });
 };
 
-const js = (code: string) => {
+const js = (code: string, importMap:ImportMap, preprocessor: string) => {
   return new Promise(async (resolve, reject) => {
     try {
+      let result;
       await load(["html", "babel", "css"]);
       // todos:importMap 暂定为空
-      console.log(code);
       // 加载babel解析器
 
-      const result = await resolveImport(code, {});
+      if (preprocessor === "js") {
+        result = await resolveImport(code, []);
+      }
+      if (preprocessor === "babel") {
+        result = await resolveJSX(code);
+      }
+
       resolve(result);
     } catch (error) {
-      reject(error);
+      console.log("fuck off the transformed error is:", error);
     }
   });
 };

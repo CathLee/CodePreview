@@ -67,9 +67,7 @@ const index: FC = () => {
         }
     ]
     const data = await compile(jsContent || '', htmlContent || '', cssContent || '');
-    console.log(data.js.js,)
     const src = createHtml((data as any).html, (data as any).css, (data as any).js.js, jsSource);
-    console.log("src:",src)
     if (iframeRef.current) {
       const document =
         iframeRef.current.contentDocument ||
