@@ -1,0 +1,24 @@
+<!--
+ * @Date: 2024-02-04 21:17:04
+ * @Description: 
+-->
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>React with CDN</title>
+    <!-- 引入React的CDN -->
+    <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <!-- 引入ReactDOM的CDN -->
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <!-- 引入Babel的CDN -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <!-- React组件将挂载到这个div上 -->
+    <script type="text/babel">
+      ReactDOM.render(<h1>Hello, world!</h1>, document.getElementById("root"));
+    </script>
+  </body>
+</html>

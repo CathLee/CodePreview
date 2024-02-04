@@ -7,16 +7,23 @@ import { ImportDeclaration } from "@babel/types";
 import loadjs from "loadjs";
 import * as BabelType from "@babel/types";
 export const base = "http://localhost:5173/";
-interface Visited {
-  [key: string]: boolean;
+/**
+ * 使用 Record 类型来代替简单的键值对接口
+ */
+export type Visited = Record<string, boolean>;
+export type PreprocessorLoaded = Record<string, boolean>;
+export type ImportMapEntry = Record<string, string>;
+export type ImportMap = ImportMapEntry[];
+export interface ImportResolutionResult {
+  useImport: boolean;
+  js: string;
 }
-
 /**
  * @description: 遍历AST，判断是否有import语句
  * @param {string} code
  * @return {*}
  */
-const checkHasImport = (code: string): Boolean => {
+const checkHasImport = (code: string): boolean => {
   let result = false;
   window.Babel.transform(code, {
     plugins: [
@@ -49,11 +56,11 @@ const isBareImport = (source: string) => {
 
 /**
  * @description: 遍历并加载importMap裸导入的模块，并将对应的裸导入模块替换为cdn地址
- * @param {*} importMap
+ * @param {ImportMap} importMap
  * @return {*}
  */
-const parseJsImportPlugin = (importMap = {}) => {
-  let visited: Visited;
+const parseJsImportPlugin = (importMap: ImportMap) => {
+  let visited: Visited = {};
   return function (babel: { types: typeof BabelType }) {
     let t = babel.types;
     return {
@@ -77,10 +84,6 @@ const esModuleCdnUrl = "https://unpkg.com/";
 const handleEsModuleCdnUrl = (moudle: string, useModule: Boolean = true) => {
   return `${esModuleCdnUrl}${module}${useModule ? "?module" : ""}`;
 };
-
-interface PreprocessorLoaded {
-  [key: string]: boolean;
-}
 // 记录加载状态
 const preprocessorLoaded: PreprocessorLoaded = {
   html: true,
@@ -93,7 +96,7 @@ const preprocessorLoaded: PreprocessorLoaded = {
  * @param {string[]} preprocessorList
  * @return {*}
  */
-export const load = (preprocessorList: string[]) => {
+export const load = (preprocessorList: string[]): Promise<void> | void => {
   let notLoaded: string[] = preprocessorList.filter(
     (item) => !preprocessorLoaded[item]
   );
@@ -114,23 +117,23 @@ export const load = (preprocessorList: string[]) => {
         notLoaded.forEach((item) => {
           preprocessorLoaded[item] = true;
         });
-        console.log("成功！！！！")
         resolve();
       })
       .catch((err: Error) => {
-        console.log("dfsdfsdadfsadsfasd")
         reject(err);
       });
   });
 };
 /**
- * @description: 解析import语句
+ * @description: 解析import语句 暂时仅针对js情况
  * @param {string} code
- * @param {string} importMap 依赖包的cdn地址
+ * @param {ImportMap} importMap 依赖包的cdn地址
  * @return {*}
  */
-export const resolveImport = async (code: string, importMap: string) => {
-  console.log(code);
+export const resolveImport = async (
+  code: string,
+  importMap: ImportMap
+): Promise<ImportResolutionResult> => {
   // 加载babel解析器
   if (!checkHasImport(code)) {
     return {
@@ -145,4 +148,25 @@ export const resolveImport = async (code: string, importMap: string) => {
     // }).code,
     js: code,
   };
+};
+/**
+ * @description: 解析React模板
+ * @param {string} code
+ * @return {*}
+ */
+export const resolveJSX = (code: string):Promise<ImportResolutionResult> => {
+  return new Promise((resolve, rejects) => {
+    try {
+      const _code = window.Babel!.transform(code, {
+        presets: ["env", "react"],
+      })?.code;
+      resolve({
+        useImport: false,
+        js: _code,
+      });
+    } catch (error) {
+      console.log("jsx error is:", error);
+      rejects(error);
+    }
+  });
 };

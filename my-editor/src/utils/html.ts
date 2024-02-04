@@ -1,4 +1,3 @@
-import { SourceType } from "@/types/source";
 import transform from "./transform";
 
 /*
@@ -21,16 +20,18 @@ export const assembleHtml = (head: string, body: string) => {
 export const compile = async (
   jsContent: string,
   htmlContent: string,
-  cssContent: string,
+  cssContent: string
 ) => {
-    console.log(jsContent, htmlContent, cssContent);
-    
   const htmlTransform = transform.html(htmlContent);
   // todos:importMap 暂定为空
-  const jsTransform = transform.js(jsContent, {});
+  const jsTransform = transform.js(jsContent, [], "babel");
   const cssTransform = transform.css(cssContent);
   try {
-    const [htmlStr, jsData, cssStr] = await Promise.all([htmlTransform, jsTransform, cssTransform]);
+    const [htmlStr, jsData, cssStr] = await Promise.all([
+      htmlTransform,
+      jsTransform,
+      cssTransform,
+    ]);
     return {
       html: htmlStr,
       js: jsData,
