@@ -12,16 +12,17 @@ export const useCreateHtml = () => {
     jsStr: string,
     jsSource: SourceType[]
   ) => {
-    const _jsResources = jsSource.map((item) => {
-      return `<script src="${item.url}"></script>`;
-    });
+    const _jsResources = jsSource
+      .map((item) => {
+        return `<script src="${item.url}"><\/script>`;
+      })
+      .join("");
     const head = `
       <title>预览<\/title>
       <style type="text/css">
           ${cssStr}
       <\/style>    `;
     const jsContent = `
-    
     <script>
         try {
           ${jsStr}
